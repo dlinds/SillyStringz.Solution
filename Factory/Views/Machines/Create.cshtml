@@ -17,20 +17,46 @@
         <div class="col">
           @Html.TextBoxFor(model => model.MachineModel, new {@class = "form-control",required = "required", placeholder="Machine Model"})
         </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col">
+      </div>
+      <div class="row mt-3">
+        <div class="col">
           @Html.TextBoxFor(model => model.ManufacturedYear, new {@class = "form-control", type="number", required = "required", min=1950, max=2022, placeholder="Manufacture Year"})
-            </div>
+        </div>
         <div class="col">
           @Html.DropDownList("MachinePurpose", new List<SelectListItem>
-          {
-            new SelectListItem { Text = "What does this machine do", Selected=true, Disabled=true},
-            new SelectListItem { Text = "Create", Value = "create"},
-            new SelectListItem { Text = "Destroy", Value = "destroy"},
-            new SelectListItem { Text = "Liquify", Value = "liquify"}
-          }, new { @required = "required", @class="form-control"})
+        {
+        new SelectListItem { Text = "What does this machine do", Selected=true, Disabled=true},
+        new SelectListItem { Text = "Create", Value = "create"},
+        new SelectListItem { Text = "Destroy", Value = "destroy"},
+        new SelectListItem { Text = "Liquify", Value = "liquify"}
+        }, new { @required = "required", @class="form-control"})
         </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-6 ">
+          <label for="addEngineers" class="mt-3">Would you like to associate any engineers with this machine?</label>
+          <select name="addEngineers" class="form-control" id="addEngineers">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+          <select id="listOfEngineers" class="form-control mt-3" style="display:none;">
+            @foreach (Engineer engineer in ViewBag.ListOfEngineers)
+            {
+              <option>@engineer.Name</option>
+            }
+          </select>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+        </div>
+        <script>
+          $("#addEngineers").change(function () {
+            if ($("#addEngineers").val() === "Yes") {
+              $("#listOfEngineers").show();
+            } else {
+              $("#listOfEngineers").hide();
+            }
+          });
+        </script>
       </div>
     </div>
     <div class="form-group px-5 mt-3">

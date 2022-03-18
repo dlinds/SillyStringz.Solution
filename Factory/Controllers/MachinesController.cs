@@ -17,11 +17,14 @@ namespace Factory.Controllers
     }
     public ActionResult Index(int id = 0)
     {
-      if (id <= 0) {
+      if (id <= 0)
+      {
         ViewBag.PageName = "Machine List";
         List<Machine> model = _db.Machines.ToList();
         return View(model);
-      } else {
+      }
+      else
+      {
         ViewBag.PageName = "Machine List";
         ViewBag.ThisMachine = _db.Machines.FirstOrDefault(m => m.MachineId == id);
         List<Machine> model = _db.Machines.ToList();
@@ -30,6 +33,7 @@ namespace Factory.Controllers
     }
     public ActionResult Create()
     {
+      ViewBag.ListOfEngineers = _db.Engineers.ToList();
       ViewBag.PageName = "Add Machine";
       return View();
     }
