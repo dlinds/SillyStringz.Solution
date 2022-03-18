@@ -39,23 +39,38 @@
             <option value="No">No</option>
             <option value="Yes">Yes</option>
           </select>
-          <select id="listOfEngineers" class="form-control mt-3" style="display:none;">
-            @foreach (Engineer engineer in ViewBag.ListOfEngineers)
-            {
-              <option>@engineer.Name</option>
-            }
-          </select>
+          <div class="row" id="addEngineerContainer" style="display:none;">
+            <div class="col-7">
+              <select id="listOfEngineers" class="form-control mt-3">
+                @foreach (Engineer engineer in ViewBag.ListOfEngineers)
+                {
+                  <option value="engineer-@engineer.EngineerId">@engineer.Name</option>
+                }
+              </select>
+            </div>
+            <div class="col-5 pt-3 my-auto">
+              <a class="btn btn-sm btn-dark px-2" id="addEngineerButton">Add</a>
+              <a class="btn btn-sm btn-secondary px-2">Cancel</a>
+            </div>
+          </div>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-6">
+          <span id="selectedEngineers"></span>
         </div>
         <script>
           $("#addEngineers").change(function () {
             if ($("#addEngineers").val() === "Yes") {
-              $("#listOfEngineers").show();
+              $("#addEngineerContainer").show();
             } else {
               $("#listOfEngineers").hide();
             }
           });
+          $("#addEngineerButton").click(function () {
+            let text = $("#listOfEngineers option:selected").text();
+            $("#selectedEngineers").html($("#selectedEngineers").html() + text + " &nbsp; X <br>");
+            $("#listOfEngineers option:selected").remove();
+          @* $("#selectedEngineers").append($("#listOfEngineers")).find(":selected").text(); + "<br>"; *@
+                });
         </script>
       </div>
     </div>
