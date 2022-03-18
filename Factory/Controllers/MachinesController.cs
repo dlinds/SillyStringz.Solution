@@ -17,16 +17,19 @@ namespace Factory.Controllers
     }
     public ActionResult Index(int id = 0)
     {
+      ViewBag.PageName = "Machine List";
       if (id <= 0)
       {
-        ViewBag.PageName = "Machine List";
         List<Machine> model = _db.Machines.ToList();
         return View(model);
       }
       else
       {
-        ViewBag.PageName = "Machine List";
-        ViewBag.ThisMachine = _db.Machines.FirstOrDefault(m => m.MachineId == id);
+        ViewBag.ThisMachine = _db.Machines
+          .Include(machine => machine.JoinEntities)
+          .ThenInclude(join => join.Engineer)
+          .FirstOrDefault(machine => machine.MachineId == id);
+        ViewBag.ListOfEngineers = _db.Engineers.ToList();
         List<Machine> model = _db.Machines.ToList();
         return View(model);
       }
@@ -42,7 +45,16 @@ namespace Factory.Controllers
     {
       _db.Machines.Add(machine);
       _db.SaveChanges();
-      return View("Index");
+      return RedirectToAction("Index");
     }
+    [HttpPost]
+    public ActionResult AddEngineer(int MachineId, int EngineerId)
+    {
+      // Machine thisMachine = _db.Machines.FirstOrDefault(m => m.MachineId == MachineId);
+      _db.EngineerMachine.Add(new EngineerMachine() { MachineId = MachineId, EngineerId = EngineerId });
+      _db.SaveChanges();
+      return RedirectToAction("Index", "Machines", new { id = MachineId });
+    }
+
   }
 }

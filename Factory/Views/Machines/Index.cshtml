@@ -6,16 +6,17 @@
 <div class="row">
   <div class="col-2">
     <ul class="nav nav-pills flex-column">
-      @foreach (Machine machine in Model) {
+      @foreach (Machine machine in Model)
+      {
         <li class="nav-item py-2">
           <a class="btn btn-dark w-100" href="../machines/?id=@machine.MachineId">@machine.MachineName</a>
         </li>
       }
-
     </ul>
   </div>
   <div class="col-10">
-    @if (@ViewBag.ThisMachine != null) {
+    @if (@ViewBag.ThisMachine != null)
+    {
       <div class="row">
         <div class="col-6">
           <h1 class="display-5">@ViewBag.ThisMachine.MachineName</h1>
@@ -23,17 +24,41 @@
           <h3 class="display-6">@ViewBag.ThisMachine.MachineMake @ViewBag.ThisMachine.MachineModel</h3>
           <p class="fs-5">Purpose: @ViewBag.ThisMachine.MachinePurpose
             <br>
-            Manufacturer Year: @ViewBag.ThisMachine.ManufacturedYear</p>
+            Manufacturer Year: @ViewBag.ThisMachine.ManufacturedYear
+          </p>
         </div>
         <div class="col-6 text-end">
           <h5 class="display-5">Assgined Engineers</h5>
           <hr>
-            <p class="fs-5">Engineer 1
-            <br>
-            Engineer 2
-            <br>
-            </p>
-            <a class="btn btn-primary">Add an engineer</a>
+          @foreach (var join in ViewBag.ThisMachine.JoinEntities)
+          {
+            <p class="fs-5">@join.Engineer.Name</p>
+          }
+          <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addEngineer">
+            Add an Engineer
+          </button>
+          <div class="modal fade" id="addEngineer" tabindex="-1" aria-labelledby="addEngineerLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addEngineerLabel">Modal title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddEngineer", "Machines"))
+                {
+                  <div class="modal-body text-start">
+                    <label for="engineer">Select an Engineer to Add</label>
+                    @Html.DropDownList("EngineerId", new SelectList(ViewBag.ListOfEngineers, "EngineerId", "Name"), new {@class="form-control"})
+                  </div>
+                  <input type="hidden" value="@ViewBag.ThisMachine.MachineId" name="MachineId">
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     }
