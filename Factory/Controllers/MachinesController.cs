@@ -9,5 +9,29 @@ namespace Factory.Controllers
 {
   public class MachinesController : Controller
   {
+    private readonly FactoryContext _db;
+
+    public MachinesController(FactoryContext db)
+    {
+      _db = db;
+    }
+    public ActionResult Index()
+    {
+      ViewBag.PageName = "Machine List";
+      List<Machine> model = _db.Machines.ToList();
+      return View(model);
+    }
+    public ActionResult Create()
+    {
+      ViewBag.PageName = "Add Machine";
+      return View();
+    }
+    [HttpPost]
+    public ActionResult Create(Machine machine)
+    {
+      _db.Machines.Add(machine);
+      _db.SaveChanges();
+      return View();
+    }
   }
 }

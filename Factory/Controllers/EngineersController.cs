@@ -15,6 +15,12 @@ namespace Factory.Controllers
     {
       _db = db;
     }
+    public ActionResult Index()
+    {
+      ViewBag.PageName = "Engineer List";
+      List<Engineer> model = _db.Engineers.ToList();
+      return View(model);
+    }
     public ActionResult Create()
     {
       ViewBag.PageName = "Add Engineer";
