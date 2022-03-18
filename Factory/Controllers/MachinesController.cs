@@ -15,7 +15,7 @@ namespace Factory.Controllers
     {
       _db = db;
     }
-    public ActionResult Index(int id)
+    public ActionResult Index(int id = 0)
     {
       if (id <= 0) {
         ViewBag.PageName = "Machine List";

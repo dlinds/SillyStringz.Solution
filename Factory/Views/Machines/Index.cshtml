@@ -8,13 +8,34 @@
     <ul class="nav nav-pills flex-column">
       @foreach (Machine machine in Model) {
         <li class="nav-item py-2">
-          <a class="btn btn-dark w-100" href="machines/@machine.MachineId">@machine.MachineName</a>
+          <a class="btn btn-dark w-100" href="../machines/?id=@machine.MachineId">@machine.MachineName</a>
         </li>
       }
 
     </ul>
   </div>
   <div class="col-10">
-    kjashdkjas
+    @if (@ViewBag.ThisMachine != null) {
+      <div class="row">
+        <div class="col-6">
+          <h1 class="display-5">@ViewBag.ThisMachine.MachineName</h1>
+          <hr>
+          <h3 class="display-6">@ViewBag.ThisMachine.MachineMake @ViewBag.ThisMachine.MachineModel</h3>
+          <p class="fs-5">Purpose: @ViewBag.ThisMachine.MachinePurpose
+            <br>
+            Manufacturer Year: @ViewBag.ThisMachine.ManufacturedYear</p>
+        </div>
+        <div class="col-6 text-end">
+          <h5 class="display-5">Assgined Engineers</h5>
+          <hr>
+            <p class="fs-5">Engineer 1
+            <br>
+            Engineer 2
+            <br>
+            </p>
+            <a class="btn btn-primary">Add an engineer</a>
+        </div>
+      </div>
+    }
   </div>
 </div>
