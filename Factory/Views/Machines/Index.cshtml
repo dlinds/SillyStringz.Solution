@@ -1,3 +1,20 @@
 @{
   Layout = "_Layout";
 }
+@using Factory.Models;
+@model List<Factory.Models.Machine>;
+<div class="row">
+  <div class="col-2">
+    <ul class="nav nav-pills flex-column">
+      @foreach (Machine machine in Model) {
+        <li class="nav-item py-2">
+          <a class="btn btn-dark w-100" href="machines/@machine.MachineId">@machine.MachineName</a>
+        </li>
+      }
+
+    </ul>
+  </div>
+  <div class="col-10">
+    kjashdkjas
+  </div>
+</div>

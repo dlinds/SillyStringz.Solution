@@ -10,6 +10,7 @@ namespace Factory.Models
     }
 
     public int MachineId { get; set; }
+    public string MachineName {get; set;}
     public string MachinePurpose {get; set;}
     public string MachineMake { get; set; }
     public string MachineModel { get; set; }

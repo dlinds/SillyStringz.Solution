@@ -15,11 +15,18 @@ namespace Factory.Controllers
     {
       _db = db;
     }
-    public ActionResult Index()
+    public ActionResult Index(int id)
     {
-      ViewBag.PageName = "Machine List";
-      List<Machine> model = _db.Machines.ToList();
-      return View(model);
+      if (id <= 0) {
+        ViewBag.PageName = "Machine List";
+        List<Machine> model = _db.Machines.ToList();
+        return View(model);
+      } else {
+        ViewBag.PageName = "Machine List";
+        ViewBag.ThisMachine = _db.Machines.FirstOrDefault(m => m.MachineId == id);
+        List<Machine> model = _db.Machines.ToList();
+        return View(model);
+      }
     }
     public ActionResult Create()
     {
@@ -31,7 +38,7 @@ namespace Factory.Controllers
     {
       _db.Machines.Add(machine);
       _db.SaveChanges();
-      return View();
+      return View("Index");
     }
   }
 }

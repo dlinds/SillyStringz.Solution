@@ -14,7 +14,7 @@
 
 <body>
 
- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+ <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#353535;">
   <a class="navbar-brand m-3" href="#">SillyStringz</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -45,15 +45,19 @@
     </ul>
   </div>
 </nav>
-  <div class="mt-1 container-xl">
-    <div class="bg-light rounded-3" style="background-color: #8FBFE0 !important;">
-      <div class="mb-1 container-fluid py-5">
-        <h1 class="display-5 text-center" style="color: #000 !important;">@ViewBag.PageName</h1>
+  <div class="container">
+    <div class="bg-light rounded-3" style="background-color: #284B63 !important;">
+      <div class="container-fluid py-3">
+        <h1 class="display-3 text-center text-white">@ViewBag.PageName</h1>
       </div>
     </div>
   </div>
-  <div class="container-md">
-    @RenderBody()
+  <div class="container">
+    <div class="bg-light rounded-3 pb-5" style="background-color: #f8f9fa!important">
+      <div class="container-fluid pt-3 pb-5 ">
+        @RenderBody()
+      </div>
+    </div>
   </div>
   @* @await Html.PartialAsync("Footer") *@
 
