@@ -32,47 +32,55 @@
         }, new { @required = "required", @class="form-control"})
         </div>
       </div>
-      <div class="row">
+      @*
+        <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6 ">
-          <label for="addEngineers" class="mt-3">Would you like to associate any engineers with this machine?</label>
-          <select name="addEngineers" class="form-control" id="addEngineers">
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-          <div class="row" id="addEngineerContainer" style="display:none;">
-            <div class="col-7">
-              <select id="listOfEngineers" class="form-control mt-3">
-                @foreach (Engineer engineer in ViewBag.ListOfEngineers)
-                {
-                  <option value="engineer-@engineer.EngineerId">@engineer.Name</option>
-                }
-              </select>
-            </div>
-            <div class="col-5 pt-3 my-auto">
-              <a class="btn btn-sm btn-dark px-2" id="addEngineerButton">Add</a>
-              <a class="btn btn-sm btn-secondary px-2">Cancel</a>
-            </div>
-          </div>
+        <label for="addEngineers" class="mt-3">Would you like to associate any engineers with this machine?</label>
+        <select name="addEngineers" class="form-control" id="addEngineers">
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+        </select>
+        <div class="row" id="addEngineerContainer" style="display:none;">
+        <div class="col-7">
+        <select id="listOfEngineers" class="form-control mt-3">
+        @foreach (Engineer engineer in ViewBag.ListOfEngineers)
+        {
+        <option value="engineer-@engineer.EngineerId">@engineer.Name</option>
+        }
+        </select>
         </div>
-        <div class="col-sm-12 col-md-6 col-lg-6">
-          <span id="selectedEngineers"></span>
+        <div class="col-5 pt-3 my-auto">
+        <a class="btn btn-sm btn-dark px-2" id="addEngineerButton">Add</a>
+        <a class="btn btn-sm btn-secondary px-2">Cancel</a>
+        </div>
+        </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6 pt-5 text-end">
+        <span id="selectedEngineers"></span>
         </div>
         <script>
-          $("#addEngineers").change(function () {
-            if ($("#addEngineers").val() === "Yes") {
-              $("#addEngineerContainer").show();
-            } else {
-              $("#listOfEngineers").hide();
-            }
-          });
-          $("#addEngineerButton").click(function () {
-            let text = $("#listOfEngineers option:selected").text();
-            $("#selectedEngineers").html($("#selectedEngineers").html() + text + " &nbsp; X <br>");
-            $("#listOfEngineers option:selected").remove();
-          @* $("#selectedEngineers").append($("#listOfEngineers")).find(":selected").text(); + "<br>"; *@
-                });
+        function createClickHandler(value) {
+        $(`#remove-${value}`).click(function () {
+        $(`#span-${value}`).hide();
+        });
+        }
+        $("#addEngineers").change(function () {
+        if ($("#addEngineers").val() === "Yes") {
+        $("#addEngineerContainer").show();
+        } else {
+        $("#listOfEngineers").hide();
+        }
+        });
+        $("#addEngineerButton").click(function () {
+        let value = $("#listOfEngineers option:selected").val();
+        let text = $("#listOfEngineers option:selected").text();
+        text = `<span id=#span-${value}>${text}<a class="btn btn-sm btn-secondary mx-3 px-2" id="remove-${value}">Remove</a></span><hr>`;
+        createClickHandler(value);
+        $("#selectedEngineers").html($("#selectedEngineers").html() + text);
+        $("#listOfEngineers option:selected").remove();
+        });
         </script>
-      </div>
+        </div> *@
     </div>
     <div class="form-group px-5 mt-3">
       <input type="submit" value="Add new machine" class="btn btn-dark btn-small" />
