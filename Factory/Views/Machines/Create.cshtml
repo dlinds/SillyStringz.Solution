@@ -2,28 +2,38 @@
   Layout = "_Layout";
 }
 @using Factory.Models;
-@model Factory.Models.Engineer
+@model Factory.Models.Machine
 <div class="px-5 py-5 bg-light">
   @using (Html.BeginForm())
   {
     <div class="form-group px-5">
       <div class="row">
         <div class="col">
-          @Html.LabelFor(model => model.Name, "Engineer Name")
-          @Html.TextBoxFor(model => model.Name, new {@class = "form-control", required = "required"})
+          @Html.LabelFor(model => model.ManufacturedYear, "Manufactured Year")
+          @Html.TextBoxFor(model => model.ManufacturedYear, new {@class = "form-control", type="num", required = "required"})
         </div>
         <div class="col">
-          @Html.LabelFor(model => model.ShiftStart, "Shift Start")
-
+          @Html.LabelFor(model => model.MachineMake, "Machine Make")
+          @Html.TextBoxFor(model => model.MachineMake, new {@class = "form-control",required = "required"})
         </div>
         <div class="col">
-          @Html.LabelFor(model => model.ShiftEnd, "Shift Start")
-
-          </div>
+          @Html.LabelFor(model => model.MachineModel, "Machine Model")
+          @Html.TextBoxFor(model => model.MachineModel, new {@class = "form-control",required = "required"})
+        </div>
+        <div class="col">
+          @Html.LabelFor(model => model.MachinePurpose, "Machine Purpose")
+          @Html.DropDownList("MachinePurpose", new List<SelectListItem>
+          {
+            new SelectListItem { Text = "What does this machine do", Selected=true, Disabled=true},
+            new SelectListItem { Text = "Create", Value = "create"},
+            new SelectListItem { Text = "Destroy", Value = "destroy"},
+            new SelectListItem { Text = "Liquify", Value = "liquify"}
+          }, new { @required = "required", @class="form-control"})
+        </div>
       </div>
     </div>
     <div class="form-group px-5 mt-3">
-      <input type="submit" value="Add new engineer" class="btn btn-dark btn-small" />
+      <input type="submit" value="Add new machine" class="btn btn-dark btn-small" />
     </div>
   }
 </div>

@@ -24,18 +24,30 @@
       <li class="nav-item active">
         <a class="nav-link" href="/">Home</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/machines">Machines</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Machines
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <li><a class="dropdown-item" href="/machines">View All</a></li>
+          <li><a class="dropdown-item" href="/machines/create">Add Machine</a></li>
+        </ul>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/engineers">Engineers</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Engineers
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <li><a class="dropdown-item" href="/engineers">View All</a></li>
+          <li><a class="dropdown-item" href="/engineers/create">Add an Engineer</a></li>
+        </ul>
       </li>
     </ul>
   </div>
 </nav>
   <div class="mt-1 container-xl">
     <div class="bg-light rounded-3" style="background-color: #8FBFE0 !important;">
-      <div class="mb-2 container-fluid py-5">
+      <div class="mb-1 container-fluid py-5">
         <h1 class="display-5 text-center" style="color: #000 !important;">@ViewBag.PageName</h1>
       </div>
     </div>
