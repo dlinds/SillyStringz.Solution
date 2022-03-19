@@ -19,7 +19,7 @@ namespace Factory.Controllers
     {
       ViewBag.PageName = "Engineer List";
       ViewBag.ListOfMachines = _db.Machines.ToList();
-      List<Engineer> model = _db.Engineers.ToList();
+      List<Engineer> model = _db.Engineers.Include(e => e.JoinEntities).ThenInclude(join => join.Machine).ToList();
       return View(model);
     }
     public ActionResult Create()
@@ -32,7 +32,7 @@ namespace Factory.Controllers
     {
       _db.Engineers.Add(engineer);
       _db.SaveChanges();
-      return View("Index");
+      return RedirectToAction("Index");
     }
   }
 }

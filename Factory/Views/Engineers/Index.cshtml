@@ -11,8 +11,8 @@
       <th scope="col">Name</th>
       <th scope="col">Shift Start</th>
       <th scope="col">Shift End</th>
+      <th scope="col" class="text-end">View/Edit<br>Machines</th>
       <th scope="col" class="text-end">Delete</th>
-      <th scope="col" class="text-end">View/Add/Edit <br>Assigned Machines</th>
     </tr>
   </thead>
   <tbody>
@@ -25,49 +25,61 @@
         <td>@(DateTime.Today.Add(engineer.ShiftStart).ToString("hh:mm tt"))</td>
         <td>@(DateTime.Today.Add(engineer.ShiftEnd).ToString("hh:mm tt"))</td>
         <td class="text-end">
-          <button type="button" class="btn btn-dark salon-button-small" data-bs-toggle="modal" data-bs-target="#deleteEngineerModal-@engineer.EngineerId">
-            ⊠
-          </button>
-          <div class="modal fade" id="deleteEngineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="deleteEngineerModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="deleteEngineerModalLabel">Modal title</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  ...
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-        <td class="text-end">
           <button type="button" class="btn btn-dark salon-button-small" data-bs-toggle="modal" data-bs-target="#engineerModal-@engineer.EngineerId">
             🖉
           </button>
-          <div class="modal fade" id="engineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="engineerModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="engineerModalLabel">Modal title</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  ...
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
+        </td>
+        <div class="modal fade" id="engineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="engineerModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="engineerModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                @if (@engineer.JoinEntities.Count > 0)
+                {
+                  @foreach (var join in @engineer.JoinEntities)
+                  {
+                    <p>@join.Machine.MachineName</p>
+                  }
+                }
+                else
+                {
+                  <p>No machines are currently showing as licensed for @engineer.Name</p>
+                }
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
               </div>
             </div>
           </div>
+        </div>
+
+        <td class="text-end">
+          <button type="button" class="btn btn-dark salon-button-small" data-bs-toggle="modal" data-bs-target="#deleteEngineerModal-@engineer.EngineerId">
+            ⊠
+          </button>
         </td>
+        <div class="modal fade" id="deleteEngineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="deleteEngineerModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteEngineerModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </tr>
     }
   </tbody>
