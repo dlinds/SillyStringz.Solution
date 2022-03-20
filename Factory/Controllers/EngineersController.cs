@@ -5,6 +5,7 @@ using Factory.Models;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace Factory.Controllers
 {
   public class EngineersController : Controller
@@ -33,6 +34,16 @@ namespace Factory.Controllers
       _db.Engineers.Add(engineer);
       _db.SaveChanges();
       return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult RemoveMachineFromEnginner(int joinId)
+    {
+      var joinEntry = _db.EngineerMachine.FirstOrDefault(entry => entry.EngineerMachineId == joinId);
+      _db.EngineerMachine.Remove(joinEntry);
+      _db.SaveChanges();
+      string message = "SUCCESS";
+      return Json(new { Message = message });
     }
   }
 }

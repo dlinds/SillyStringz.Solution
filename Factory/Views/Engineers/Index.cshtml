@@ -25,7 +25,7 @@
         <td>@(DateTime.Today.Add(engineer.ShiftStart).ToString("hh:mm tt"))</td>
         <td>@(DateTime.Today.Add(engineer.ShiftEnd).ToString("hh:mm tt"))</td>
         <td class="text-end">
-          <button type="button" class="btn btn-dark salon-button-small" data-bs-toggle="modal" data-bs-target="#engineerModal-@engineer.EngineerId">
+          <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#engineerModal-@engineer.EngineerId">
             🖉
           </button>
         </td>
@@ -33,7 +33,7 @@
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="engineerModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="engineerModalLabel">@engineer.Name's licensed machines</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -41,7 +41,45 @@
                 {
                   @foreach (var join in @engineer.JoinEntities)
                   {
-                    <p>@join.Machine.MachineName</p>
+
+                    <div class="card my-2" id="card-eng-@engineer.EngineerId-mach-@join.Machine.MachineId">
+                      <div class="card-header">
+                        <div class="row">
+                          <div class="col-10">
+                            <h3>@join.Machine.MachineName</h3>
+                          </div>
+                          <div class="col-2">
+                            <button type="button" class="btn btn-secondary btn-sm mt-1" id="removeMachine-eng-@engineer.EngineerId-mac-@join.Machine.MachineId">Delete</button>
+                            <script>
+                              $("#removeMachine-eng-@engineer.EngineerId-mac-@join.Machine.MachineId").click(function () {
+                                let machineId = @join.Machine.MachineId;
+                                let engineerId = @engineer.EngineerId;
+                                $.ajax({
+                                  type: "POST",
+                                  url: '@Url.Action("RemoveMachineFromEnginner")',
+                                  data: { 'joinId': @join.EngineerMachineId },
+                                  success: function () {
+                                    $("#card-eng-@engineer.EngineerId-mach-@join.Machine.MachineId").hide();
+                                  },
+                                  error: function () {
+                                    alert("Error while inserting data");
+                                  }
+                                });
+                              });
+                            </script>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <strong>Make</strong>: @join.Machine.MachineMake
+                        <br>
+                        <strong>Model</strong>: @join.Machine.MachineModel
+                        <br>
+                        <strong>Purpose</strong>: @join.Machine.MachinePurpose
+                        <br>
+                        <strong>Year</strong>: @join.Machine.ManufacturedYear
+                      </div>
+                    </div>
                   }
                 }
                 else
@@ -51,14 +89,13 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
               </div>
             </div>
           </div>
         </div>
 
         <td class="text-end">
-          <button type="button" class="btn btn-dark salon-button-small" data-bs-toggle="modal" data-bs-target="#deleteEngineerModal-@engineer.EngineerId">
+          <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#deleteEngineerModal-@engineer.EngineerId">
             ⊠
           </button>
         </td>
