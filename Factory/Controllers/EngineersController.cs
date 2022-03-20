@@ -45,5 +45,20 @@ namespace Factory.Controllers
       string message = "SUCCESS";
       return Json(new { Message = message });
     }
+
+    [HttpPost]
+    public ActionResult AddEngineerToMachine(int machineId, int engineerId)
+    {
+      // Machine thisMachine = _db.Machines.FirstOrDefault(m => m.MachineId == MachineId);
+      _db.EngineerMachine.Add(new EngineerMachine() { MachineId = machineId, EngineerId = engineerId });
+      _db.SaveChanges();
+      var joinEntry = _db.EngineerMachine.FirstOrDefault(e => e.EngineerId == engineerId && e.MachineId == machineId);
+      // var joinEntry = _db.Engineers
+      //     .Include(e => e.JoinEntities)
+      //     .ThenInclude(join => join.Engineer)
+      //     .FirstOrDefault(e => e.EngineerId == engineerId);
+      // var test = _db.Engineers.FirstOrDefault(e => e.JoinEntities).ThenInclude(join => join.Machine).ToList();
+      return Json(new { joinId = joinEntry.EngineerMachineId, machineId = joinEntry.MachineId });
+    }
   }
 }

@@ -2,6 +2,7 @@
   Layout = "_Layout";
 }
 @using Factory.Models;
+@using System.Collections.Generic;
 @model List<Factory.Models.Engineer>;
 
 <table class="table table-striped mt-3">
@@ -36,12 +37,15 @@
                 <h5 class="modal-title" id="engineerModalLabel">@engineer.Name's licensed machines</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
+              <div class="modal-body" id="@engineer.EngineerId-modal-body">
+                @{
+                  List<int> listOfCurrentlyAssignedMachines = new List<int> { };
+                }
                 @if (@engineer.JoinEntities.Count > 0)
                 {
                   @foreach (var join in @engineer.JoinEntities)
                   {
-
+                    { listOfCurrentlyAssignedMachines.Add(@join.Machine.MachineId); }
                     <div class="card my-2" id="card-eng-@engineer.EngineerId-mach-@join.Machine.MachineId">
                       <div class="card-header">
                         <div class="row">
@@ -49,17 +53,23 @@
                             <h3>@join.Machine.MachineName</h3>
                           </div>
                           <div class="col-2">
-                            <button type="button" class="btn btn-secondary btn-sm mt-1" id="removeMachine-eng-@engineer.EngineerId-mac-@join.Machine.MachineId">Delete</button>
+                            <button type="button" class="btn btn-secondary btn-sm mt-1" id="removeMachine-eng-@engineer.EngineerId-mac-@join.Machine.MachineId" style="background-color:#284b63;">Delete</button>
                             <script>
                               $("#removeMachine-eng-@engineer.EngineerId-mac-@join.Machine.MachineId").click(function () {
-                                let machineId = @join.Machine.MachineId;
-                                let engineerId = @engineer.EngineerId;
                                 $.ajax({
                                   type: "POST",
                                   url: '@Url.Action("RemoveMachineFromEnginner")',
                                   data: { 'joinId': @join.EngineerMachineId },
                                   success: function () {
-                                    $("#card-eng-@engineer.EngineerId-mach-@join.Machine.MachineId").hide();
+                                    $("#@engineer.EngineerId-listOfMachines").append($('<option>', {
+                                      value: @join.Machine.MachineId,
+                                      text: '@join.Machine.MachineName'
+                                    }));
+                                    $("#@engineer.EngineerId-listOfMachines").append(`<input type="hidden" id="eng-@engineer.EngineerId-mac-@join.Machine.MachineId-machineMake" value="@join.Machine.MachineMake">`);
+                                    $("#@engineer.EngineerId-listOfMachines").append(`<input type="hidden" id="eng-@engineer.EngineerId-mac-@join.Machine.MachineId-machineModel" value="@join.Machine.MachineModel">`);
+                                    $("#@engineer.EngineerId-listOfMachines").append(`<input type="hidden" id="eng-@engineer.EngineerId-mac-@join.Machine.MachineId-machinePurpose" value="@join.Machine.MachinePurpose">`);
+                                    $("#@engineer.EngineerId-listOfMachines").append(`<input type="hidden" id="eng-@engineer.EngineerId-mac-@join.Machine.MachineId-machineYear" value="@join.Machine.ManufacturedYear">`);
+                                    $("#card-eng-@engineer.EngineerId-mach-@join.Machine.MachineId").remove();
                                   },
                                   error: function () {
                                     alert("Error while inserting data");
@@ -87,35 +97,140 @@
                   <p>No machines are currently showing as licensed for @engineer.Name</p>
                 }
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <div class="modal-footer" style="display:inline;">
+                <div class="row">
+                  <div class="col-4">
+                    <button type="button" id="@engineer.EngineerId-addAnother" class="btn btn-dark">
+                      Add another
+                    </button>
+                  </div>
+                  <div class="col-6">
+                  </div>
+                  <div class="col-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+                <div id="@engineer.EngineerId-addMachineContainer" class="row row mt-3 pt-3 pb-4 rounded bg-light" style="display:none; ">
+                  <div class="col-sm-12 col-md-5">
+                    <select name="listOfMachines" id="@engineer.EngineerId-listOfMachines" class="form-control mt-3">
+                      @foreach (Machine machine in @ViewBag.ListOfMachines)
+                      {
+                        if (!(listOfCurrentlyAssignedMachines.Contains(@machine.MachineId)))
+                        {
+                          <option value="@machine.MachineId">@machine.MachineName</option>
+                        }
+                      }
+                    </select>
+                    @foreach (Machine machine in @ViewBag.ListOfMachines)
+                    {
+                      if (!(listOfCurrentlyAssignedMachines.Contains(@machine.MachineId)))
+                      {
+                        <input type="hidden" id="eng-@engineer.EngineerId-mac-@machine.MachineId-machineMake" value="@machine.MachineMake">
+                        <input type="hidden" id="eng-@engineer.EngineerId-mac-@machine.MachineId-machineModel" value="@machine.MachineModel">
+                        <input type="hidden" id="eng-@engineer.EngineerId-mac-@machine.MachineId-machinePurpose" value="@machine.MachinePurpose">
+                        <input type="hidden" id="eng-@engineer.EngineerId-mac-@machine.MachineId-machineYear" value="@machine.ManufacturedYear">
+                      }
+                    }
+                  </div>
+                  <div class="col-sm-12 col-md-7">
+                    <button type="button" class="btn btn-secondary mt-3" id="@engineer.EngineerId-addMachineContainerButton" style="background-color:#284b63;">Add</button>
+                  </div>
+                  <script>
+                    $("#@engineer.EngineerId-addAnother").click(function () {
+                      $("#@engineer.EngineerId-addMachineContainer").show();
+                    });
+                    $("#@engineer.EngineerId-addMachineContainerButton").click(function () {
+                      $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("AddEngineerToMachine")',
+                        data: { "machineId": $(`#@engineer.EngineerId-listOfMachines`).val(), 'engineerId': @engineer.EngineerId },
+                        success: function (result) {
+                          let cardHtml = $("#@engineer.EngineerId-modal-body").html();
+                          let machineId = $("#@engineer.EngineerId-listOfMachines option:selected").val();
+                          cardHtml +=
+                            `
+          <div class="card my-2" id="card-eng-@engineer.EngineerId-mach-${machineId}">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-10">
+                  <h3>${$("#@engineer.EngineerId-listOfMachines option:selected").text()}</h3>
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-secondary btn-sm mt-1" id="removeMachine-eng-@engineer.EngineerId-mac-${result.machineId}" style="background-color:#284b63;">
+                    Delete
+                  </button>
+                  <script>
+                    $("#removeMachine-eng-@engineer.EngineerId-mac-${result.machineId}").click(function () {
+                      $.ajax({
+                        type: "POST",
+                        url: '/Engineers/RemoveMachineFromEnginner',
+                        data: { 'joinId': ${result.joinId} },
+                        success: function () {
+                          $("#card-eng-@engineer.EngineerId-mach-${result.machineId}").remove();
+                          $("#@engineer.EngineerId-listOfMachines").append($('<option>', {
+                            value: ${result.machineId},
+                            text: '${$("#@engineer.EngineerId-listOfMachines option:selected").text()}'
+                          }));
+                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineMake" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineMake').val()}">');
+                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineModel" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineModel').val()}">');
+                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machinePurpose" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machinePurpose').val()}">');
+                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineYear" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineYear').val()}">');
+                        },
+                        error: function () {
+                          alert("Error while inserting data");
+                        }
+                      });
+                    });
+                  \<\/script>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <strong>Make</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineMake').val()}
+              <br>
+              <strong>Model</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineModel').val()}
+              <br>
+              <strong>Purpose</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machinePurpose').val()}
+              <br>
+              <strong>Year</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineYear').val()}
+            </div>
+          </div>
+                                `;
+                          $("#@engineer.EngineerId-modal-body").html(cardHtml);
+                          $("#@engineer.EngineerId-listOfMachines option:selected").remove();
+                        },
+                        error: function () {
+                          alert("Error while inserting data");
+                        }
+                      });
+                    });
+                  </script>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <td class="text-end">
-          <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#deleteEngineerModal-@engineer.EngineerId">
-            ⊠
-          </button>
-        </td>
-        <div class="modal fade" id="deleteEngineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="deleteEngineerModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="deleteEngineerModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                ...
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+          <td class="text-end">
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#deleteEngineerModal-@engineer.EngineerId">
+              ⊠
+            </button>
+          </td>
+          <div class="modal fade" id="deleteEngineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="deleteEngineerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteEngineerModalLabel">Modal title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  ...
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
       </tr>
     }
