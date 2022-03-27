@@ -12,6 +12,7 @@
       <th scope="col">Name</th>
       <th scope="col">Shift Start</th>
       <th scope="col">Shift End</th>
+      <th scope="col" class="text-end">Edit</th>
       <th scope="col" class="text-end">View/Edit<br>Machines</th>
       <th scope="col" class="text-end">Delete</th>
     </tr>
@@ -25,6 +26,79 @@
         <td>@engineer.Name</td>
         <td>@(DateTime.Today.Add(engineer.ShiftStart).ToString("hh:mm tt"))</td>
         <td>@(DateTime.Today.Add(engineer.ShiftEnd).ToString("hh:mm tt"))</td>
+        <td class="text-end">
+          <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#editEngineerModal-@engineer.EngineerId">
+            🖉
+          </button>
+        </td>
+        <div class="modal fade" id="editEngineerModal-@engineer.EngineerId" tabindex="-1" aria-labelledby="editEngineerModalLabel-@engineer.EngineerId" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editEngineerModalLabel-@engineer.EngineerId">Edit @engineer.Name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              @using (Html.BeginForm("Edit", "Engineers"))
+              {
+                <div class="modal-body text-start">
+                  <div class="form-group">
+                    <label for="engineer">Name</label>
+                    <input type="text" class="form-control" value="@engineer.Name" name="Name" placeholder="Enter in a name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="ShiftStart">Shift Start</label>
+                    @Html.DropDownList("ShiftStart", new List<SelectListItem>
+                {
+                new SelectListItem { Text = "8:00 AM", Value = "08:00:00"},
+                new SelectListItem { Text = "8:30 AM", Value = "08:30:00"},
+                new SelectListItem { Text = "9:00 AM", Value = "09:00:00"},
+                new SelectListItem { Text = "9:30 AM", Value = "09:30:00"},
+                new SelectListItem { Text = "10:00 AM", Value = "10:00:00"},
+                new SelectListItem { Text = "10:30 AM", Value = "10:30:00"},
+                new SelectListItem { Text = "11:00 AM", Value = "11:00:00"},
+                new SelectListItem { Text = "11:30 AM", Value = "11:30:00"},
+                new SelectListItem { Text = "12:00 PM", Value = "12:00:00"},
+                new SelectListItem { Text = "12:30 PM", Value = "12:30:00"},
+                new SelectListItem { Text = "1:00 PM", Value = "13:00:00"},
+                new SelectListItem { Text = "1:30 PM", Value = "13:30:00"},
+                new SelectListItem { Text = "2:00 PM", Value = "14:00:00"},
+                new SelectListItem { Text = "2:30 PM", Value = "14:30:00"},
+                new SelectListItem { Text = "3:00 PM", Value = "15:00:00"}
+                }, new { @required = "required", @class="form-control"})
+                  </div>
+                  <div class="form-group">
+                    <label for="ShiftEnd">Shift Start</label>
+                    @Html.DropDownList("ShiftENd", new List<SelectListItem>
+                {
+                new SelectListItem { Text = "1:00 PM", Value = "13:00:00"},
+                new SelectListItem { Text = "1:30 PM", Value = "13:30:00"},
+                new SelectListItem { Text = "2:00 PM", Value = "14:00:00"},
+                new SelectListItem { Text = "2:30 PM", Value = "14:30:00"},
+                new SelectListItem { Text = "3:00 PM", Value = "15:00:00"},
+                new SelectListItem { Text = "3:30 PM", Value = "15:30:00"},
+                new SelectListItem { Text = "4:00 PM", Value = "16:00:00"},
+                new SelectListItem { Text = "4:30 PM", Value = "16:30:00"},
+                new SelectListItem { Text = "5:00 PM", Value = "17:00:00"},
+                new SelectListItem { Text = "5:30 PM", Value = "17:30:00"},
+                new SelectListItem { Text = "6:00 PM", Value = "18:00:00"},
+                new SelectListItem { Text = "6:30 PM", Value = "18:30:00"},
+                new SelectListItem { Text = "7:00 PM", Value = "19:00:00"},
+                new SelectListItem { Text = "7:30 PM", Value = "19:30:00"},
+                new SelectListItem { Text = "8:00 PM", Value = "20:00:00"},
+                new SelectListItem { Text = "8:30 PM", Value = "20:30:00"},
+                new SelectListItem { Text = "9:00 PM", Value = "21:00:00"}
+                }, new { @required = "required", @class="form-control"})
+                  </div>
+                </div>
+                <input type="hidden" value="@engineer.EngineerId" name="EngineerId">
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
         <td class="text-end">
           <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#engineerModal-@engineer.EngineerId">
             🖉
@@ -149,52 +223,52 @@
                           let machineId = $("#@engineer.EngineerId-listOfMachines option:selected").val();
                           cardHtml +=
                             `
-          <div class="card my-2" id="card-eng-@engineer.EngineerId-mach-${machineId}">
-            <div class="card-header">
-              <div class="row">
-                <div class="col-10">
-                  <h3>${$("#@engineer.EngineerId-listOfMachines option:selected").text()}</h3>
-                </div>
-                <div class="col-2">
-                  <button type="button" class="btn btn-secondary btn-sm mt-1" id="removeMachine-eng-@engineer.EngineerId-mac-${result.machineId}" style="background-color:#284b63;">
-                    Delete
-                  </button>
-                  <script>
-                    $("#removeMachine-eng-@engineer.EngineerId-mac-${result.machineId}").click(function () {
-                      $.ajax({
-                        type: "POST",
-                        url: '/Engineers/RemoveMachineFromEnginner',
-                        data: { 'joinId': ${result.joinId} },
-                        success: function () {
-                          $("#card-eng-@engineer.EngineerId-mach-${result.machineId}").remove();
-                          $("#@engineer.EngineerId-listOfMachines").append($('<option>', {
-                            value: ${result.machineId},
-                            text: '${$("#@engineer.EngineerId-listOfMachines option:selected").text()}'
-                          }));
-                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineMake" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineMake').val()}">');
-                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineModel" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineModel').val()}">');
-                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machinePurpose" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machinePurpose').val()}">');
-                          $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineYear" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineYear').val()}">');
-                        },
-                        error: function () {
-                          alert("Error while inserting data");
-                        }
-                      });
-                    });
-                  \<\/script>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <strong>Make</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineMake').val()}
-              <br>
-              <strong>Model</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineModel').val()}
-              <br>
-              <strong>Purpose</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machinePurpose').val()}
-              <br>
-              <strong>Year</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineYear').val()}
-            </div>
-          </div>
+                        <div class="card my-2" id="card-eng-@engineer.EngineerId-mach-${machineId}">
+                          <div class="card-header">
+                            <div class="row">
+                              <div class="col-10">
+                                <h3>${$("#@engineer.EngineerId-listOfMachines option:selected").text()}</h3>
+                              </div>
+                              <div class="col-2">
+                                <button type="button" class="btn btn-secondary btn-sm mt-1" id="removeMachine-eng-@engineer.EngineerId-mac-${result.machineId}" style="background-color:#284b63;">
+                                  Delete
+                                </button>
+                                <script>
+                                  $("#removeMachine-eng-@engineer.EngineerId-mac-${result.machineId}").click(function () {
+                                    $.ajax({
+                                      type: "POST",
+                                      url: '/Engineers/RemoveMachineFromEnginner',
+                                      data: { 'joinId': ${result.joinId} },
+                                      success: function () {
+                                        $("#card-eng-@engineer.EngineerId-mach-${result.machineId}").remove();
+                                        $("#@engineer.EngineerId-listOfMachines").append($('<option>', {
+                                          value: ${result.machineId},
+                                          text: '${$("#@engineer.EngineerId-listOfMachines option:selected").text()}'
+                                        }));
+                                        $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineMake" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineMake').val()}">');
+                                        $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineModel" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineModel').val()}">');
+                                        $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machinePurpose" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machinePurpose').val()}">');
+                                        $("#@engineer.EngineerId-listOfMachines").append('<input type="hidden" id="eng-@engineer.EngineerId-mac-${result.machineId}-machineYear" value="${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineYear').val()}">');
+                                      },
+                                      error: function () {
+                                        alert("Error while inserting data");
+                                      }
+                                    });
+                                  });
+                                \<\/script>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <strong>Make</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineMake').val()}
+                            <br>
+                            <strong>Model</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineModel').val()}
+                            <br>
+                            <strong>Purpose</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machinePurpose').val()}
+                            <br>
+                            <strong>Year</strong>: ${$('#eng-@engineer.EngineerId-mac-' + machineId + '-machineYear').val()}
+                          </div>
+                        </div>
                                 `;
                           $("#@engineer.EngineerId-modal-body").html(cardHtml);
                           $("#@engineer.EngineerId-listOfMachines option:selected").remove();
@@ -218,15 +292,19 @@
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="deleteEngineerModalLabel">Modal title</h5>
+                  <h5 class="modal-title" id="deleteEngineerModalLabel">Confirm Deletion</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  ...
+                  Are you sure you want to delete @engineer.Name?
                 </div>
                 <div class="modal-footer">
+
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <form action="Engineers/Delete" method="POST">
+                    <input type="hidden" value="@engineer.EngineerId" name="engineerId">
+                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                  </form>
                 </div>
               </div>
             </div>

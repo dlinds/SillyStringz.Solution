@@ -50,7 +50,6 @@ namespace Factory.Controllers
     [HttpPost]
     public ActionResult AddEngineer(int MachineId, int EngineerId)
     {
-      // Machine thisMachine = _db.Machines.FirstOrDefault(m => m.MachineId == MachineId);
       _db.EngineerMachine.Add(new EngineerMachine() { MachineId = MachineId, EngineerId = EngineerId });
       _db.SaveChanges();
       return RedirectToAction("Index", "Machines", new { id = MachineId });

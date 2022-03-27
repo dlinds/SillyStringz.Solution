@@ -37,6 +37,22 @@ namespace Factory.Controllers
     }
 
     [HttpPost]
+    public ActionResult Delete(int engineerId)
+    {
+      Engineer engineer = _db.Engineers.FirstOrDefault(e => e.EngineerId == engineerId);
+      _db.Engineers.Remove(engineer);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public ActionResult Edit(Engineer engineer)
+    {
+      _db.Entry(engineer).State = EntityState.Modified;
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    [HttpPost]
     public ActionResult RemoveMachineFromEnginner(int joinId)
     {
       var joinEntry = _db.EngineerMachine.FirstOrDefault(entry => entry.EngineerMachineId == joinId);
